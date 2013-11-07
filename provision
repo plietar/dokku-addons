@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+CONTAINER_FILE="$ADDON_DATA/CONTAINER"
+PASSWORD_FILE="$ADDON_DATA/PASSWORD"
+
+APP=$(head -c7 <<<$1)
+
+set +o pipefail
+UUID=$(cat /dev/urandom | tr -dc _A-Z-a-z-0-9 | head -c8)
+set -o pipefail
+
+ID="$APP-$UUID"
+PASSWORD=$((< /dev/urandom tr -dc _A-Z-a-z-0-9 || true) | head -c 32; echo)
+
+CID=$(cat $CONTAINER_FILE)
+IP=$(docker inspect $CID | grep IPAddress | cut -d '"' -f 4)
+ROOT_PASSWORD=$(cat $PASSWORD_FILE)
+
+mysql -h $IP -u root -p"$ROOT_PASSWORD" <<EOF
+CREATE DATABASE \`$ID\`;
+GRANT ALL PRIVILEGES
+ON \`$ID\`.*
+TO '$ID'@'%'
+IDENTIFIED BY '$PASSWORD';
+FLUSH PRIVILEGES;
+EOF
+
+
+
+echo "$ID;$PASSWORD"
+

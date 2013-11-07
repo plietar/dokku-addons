@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+CONTAINER_FILE="$ADDON_DATA/CONTAINER"
+PASSWORD_FILE="$ADDON_DATA/PASSWORD"
+
+ID="$1"
+
+CID=$(cat $CONTAINER_FILE)
+IP=$(docker inspect $CID | grep IPAddress | cut -d '"' -f 4)
+ROOT_PASSWORD=$(cat $PASSWORD_FILE)
+
+mysql -h $IP -u root -p"$ROOT_PASSWORD" <<EOF
+DROP DATABASE \`$ID\`;
+DROP USER '$ID'
+EOF
+
+

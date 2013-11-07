@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -exo pipefail
+
+DATADIR="$ADDON_DATA/data"
+CONTAINER_FILE="$ADDON_DATA/CONTAINER"
+PASSWORD_FILE="$ADDON_DATA/PASSWORD"
+
+#sudo apt-get install -y mysql-client
+
+mkdir -p $DATADIR
+
+docker build -t addons/mariadb $ADDON_ROOT
+
+docker run -v $DATADIR:/opt/mysql addons/mariadb /bin/bash -c "cp -ra /var/lib/mysql/. /opt/mysql/"
+
+id=$(docker run -d -v $DATADIR:/opt/mysql addons/mariadb /bin/bash -c "/start")
+
+# TODO: sleep the correct amount of time
+sleep 3
+
+
+ROOT_PASSWORD=$((< /dev/urandom tr -dc _A-Z-a-z-0-9 || true) | head -c 32; echo)
+IP=$(docker inspect $id | grep IPAddress | cut -d '"' -f 4)
+
+mysqladmin -h $IP -u root password "$ROOT_PASSWORD"
+
+echo $id > $CONTAINER_FILE
+echo $ROOT_PASSWORD > $PASSWORD_FILE
