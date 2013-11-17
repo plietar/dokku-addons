@@ -28,5 +28,5 @@ EOF
 
 
 
-echo "$ID;$PASSWORD"
+echo "$ID:$PASSWORD"
 
