@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eo pipefail
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
 CONTAINER_FILE="$ADDON_DATA/CONTAINER"
 PASSWORD_FILE="$ADDON_DATA/PASSWORD"
