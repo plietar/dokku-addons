@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+APP="$1"
+
+set +o pipefail
+UUID=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32)
+PASSWORD=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32)
+set -o pipefail
+
+ID="$APP-$UUID"
+
+DATADIR="$ADDON_DATA/$ID"
+mkdir -p $DATADIR
+
+echo $PASSWORD > "$DATADIR/PASSWORD"
+
+CID=$(docker run -d -v $DATADIR:/opt/redis addons/redis)
+IP=$(docker inspect $CID | grep IPAddress | cut -d '"' -f 4)
+
+echo $CID > "$DATADIR/CONTAINER"
+
+echo "$ID:$PASSWORD"
+

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+ID="$1"
+PASS="$2"
+DATADIR="$ADDON_DATA/$ID"
+CID=$(< "$DATADIR/CONTAINER")
+
+IP=$(docker inspect $CID | grep IPAddress | cut -d '"' -f 4)
+
+echo "redis://redis:$PASS@$IP:3306/$USER"
+

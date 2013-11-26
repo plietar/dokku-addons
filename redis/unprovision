@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+ID="$1"
+DATADIR="$ADDON_DATA/$ID"
+CID=$(< "$DATADIR/CONTAINER")
+
+docker stop $CID > /dev/null || true
+
+rm -Rf $DATADIR
+
