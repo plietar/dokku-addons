@@ -7,11 +7,11 @@ PASSWORD_FILE="$ADDON_DATA/PASSWORD"
 APP=$(head -c7 <<<$1)
 
 set +o pipefail
-UUID=$(cat /dev/urandom | tr -dc _A-Z-a-z-0-9 | head -c8)
+UUID=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 8)
+PASSWORD=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32)
 set -o pipefail
 
 ID="$APP-$UUID"
-PASSWORD=$((< /dev/urandom tr -dc _A-Z-a-z-0-9 || true) | head -c 32; echo)
 
 CID=$(cat $CONTAINER_FILE)
 IP=$(docker inspect $CID | grep IPAddress | cut -d '"' -f 4)

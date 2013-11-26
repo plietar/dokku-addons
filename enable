@@ -19,7 +19,10 @@ id=$(docker run -d -v $DATADIR:/opt/mysql addons/mariadb /bin/bash -c "/start")
 sleep 3
 
 
-ROOT_PASSWORD=$((< /dev/urandom tr -dc _A-Z-a-z-0-9 || true) | head -c 32; echo)
+set +o pipefail
+ROOT_PASSWORD=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32)
+set -o pipefail
+
 IP=$(docker inspect $id | grep IPAddress | cut -d '"' -f 4)
 
 mysqladmin -h $IP -u root password "$ROOT_PASSWORD"
