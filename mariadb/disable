@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
-echo "This is still to be done" 2>&1
-exit 1
+CID=$(< "$ADDON_DATA/CONTAINER")
+
+docker stop $CID > /dev/null || true
+docker run -rm -v $ADDON_DATA:/opt/mariadb addons/mariadb rm -Rf /opt/mariadb/data
+
+rm -Rf $ADDON_DATA/CONTAINER $ADDON_DATA/PASSWORD
+

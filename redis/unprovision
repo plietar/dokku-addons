@@ -6,6 +6,8 @@ DATADIR="$ADDON_DATA/$ID"
 CID=$(< "$DATADIR/CONTAINER")
 
 docker stop $CID > /dev/null || true
+docker run -rm -v $DATADIR:/opt/redis addons/redis rm -Rf /opt/redis/data 
 
 rm -Rf $DATADIR
+
 

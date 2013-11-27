@@ -10,7 +10,7 @@ CID=$(cat $CONTAINER_FILE)
 IP=$(docker inspect $CID | grep IPAddress | cut -d '"' -f 4)
 ROOT_PASSWORD=$(cat $PASSWORD_FILE)
 
-PGPASSWORD="$ROOT_PASSWORD" psql -h $IP -U postgres -w > /dev/null <<EOF
+docker run -i -rm -e PGPASSWORD="$ROOT_PASSWORD" addons/postgresql psql -h $IP -U postgres -w > /dev/null <<EOF
 DROP DATABASE "$ID";
 DROP USER "$ID";
 EOF

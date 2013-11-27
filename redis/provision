@@ -4,8 +4,8 @@ set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 APP="$1"
 
 set +o pipefail
-UUID=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32)
-PASSWORD=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32)
+UUID=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 32)
+PASSWORD=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 32)
 set -o pipefail
 
 ID="$APP-$UUID"

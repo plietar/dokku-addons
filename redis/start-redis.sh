@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
-DATADIR=/opt/redis
+DATADIR=/opt/redis/data
 
-if [[ -f $DATADIR/PASSWORD ]]; then
-  redis-server --dir $DATADIR --requirepass $(< $DATADIR/PASSWORD)
+if [[ ! -d $DATADIR ]]; then
+  mkdir -p $DATADIR
+  chown redis:redis $DATADIR
+fi
+
+if [[ -f /opt/redis/PASSWORD ]]; then
+  redis-server --dir $DATADIR --requirepass $(< /opt/redis/PASSWORD)
 else
   redis-server --dir $DATADIR
 fi

@@ -7,10 +7,10 @@ EXTRA_ARGS="-D $DATADIR -h '*' -c config_file=/etc/postgresql/9.1/main/postgresq
 
 
 if [[ ! -d $DATADIR ]]; then
-  PASSWORD=$(</opt/postgresql/PASSWORD)
-
   mkdir -p $DATADIR
   chown postgres:postgres $DATADIR
+
+  PASSWORD=$(</opt/postgresql/PASSWORD)
 
   su postgres -c "$PREFIX/initdb -D $DATADIR"
   su postgres -c "$PREFIX/postgres --single $EXTRA_ARGS" <<< "ALTER USER postgres WITH PASSWORD '$PASSWORD';"

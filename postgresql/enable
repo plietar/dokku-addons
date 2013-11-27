@@ -4,10 +4,10 @@ set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 CONTAINER_FILE="$ADDON_DATA/CONTAINER"
 PASSWORD_FILE="$ADDON_DATA/PASSWORD"
 
-docker build -t addons/postgresql $ADDON_ROOT
+docker build -rm -t addons/postgresql $ADDON_ROOT
 
 set +o pipefail
-ROOT_PASSWORD=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32)
+ROOT_PASSWORD=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 32)
 set -o pipefail
 
 echo $ROOT_PASSWORD > $PASSWORD_FILE

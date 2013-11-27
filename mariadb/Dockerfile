@@ -18,8 +18,6 @@ RUN apt-get clean
 RUN rm /usr/sbin/policy-rc.d
 
 RUN mkdir -p /opt/mysql
-RUN chown -R mysql:mysql /opt/mysql
-RUN chmod -R 755 /opt/mysql
 
 ADD start-mariadb.sh /start
 
