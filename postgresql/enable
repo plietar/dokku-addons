@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+CONTAINER_FILE="$ADDON_DATA/CONTAINER"
+PASSWORD_FILE="$ADDON_DATA/PASSWORD"
+
+docker build -t addons/postgresql $ADDON_ROOT
+
+set +o pipefail
+ROOT_PASSWORD=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32)
+set -o pipefail
+
+echo $ROOT_PASSWORD > $PASSWORD_FILE
+
+CID=$(docker run -d -v $ADDON_DATA:/opt/postgresql addons/postgresql)
+
+echo $CID > $CONTAINER_FILE
+

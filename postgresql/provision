@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+CONTAINER_FILE="$ADDON_DATA/CONTAINER"
+PASSWORD_FILE="$ADDON_DATA/PASSWORD"
+
+APP=$(head -c7 <<<$1)
+
+set +o pipefail
+UUID=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 8)
+PASSWORD=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32)
+set -o pipefail
+
+ID="$APP-$UUID"
+
+CID=$(cat $CONTAINER_FILE)
+IP=$(docker inspect $CID | grep IPAddress | cut -d '"' -f 4)
+ROOT_PASSWORD=$(cat $PASSWORD_FILE)
+
+PGPASSWORD="$ROOT_PASSWORD" psql -h $IP -U postgres -w > /dev/null <<EOF
+CREATE USER "$ID" WITH PASSWORD '$PASSWORD';
+CREATE DATABASE "$ID";
+GRANT ALL PRIVILEGES ON DATABASE "$ID" TO "$ID";
+EOF
+
+echo "$ID:$PASSWORD"
+
