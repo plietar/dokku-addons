@@ -9,5 +9,5 @@ PASS=$2
 CID=$(cat $CONTAINER_FILE)
 IP=$(docker inspect $CID | grep IPAddress | cut -d '"' -f 4)
 
-echo "mysql://$USER:$PASS@$IP:5432/$USER"
+echo "postgresql://$USER:$PASS@$IP:5432/$USER"
 
