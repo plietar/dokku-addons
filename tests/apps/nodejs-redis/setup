@@ -1,0 +1,10 @@
+#!/bin/bash
+set -ex;
+
+HOST=$1
+APP=$2
+
+ssh dokku@$HOST addons:enable redis
+sleep 5
+ssh dokku@$HOST addons:add $APP redis
+

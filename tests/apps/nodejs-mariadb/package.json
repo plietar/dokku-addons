@@ -1,0 +1,12 @@
+{
+  "name": "nodejs-mariadb",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "3.4.x",
+    "mysql": "2.0.0-alpha9"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.2.x"
+  }
+}

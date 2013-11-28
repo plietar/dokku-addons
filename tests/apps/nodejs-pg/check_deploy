@@ -1,0 +1,9 @@
+#!/bin/bash
+set -ex;
+
+key=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 8)
+value=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 8)
+
+curl -s -X PUT -d "$value" "$1/$key"
+test "$(curl -s $1/$key)" == "$value"
+

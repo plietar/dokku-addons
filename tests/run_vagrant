@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -eo pipefail
+SELF=`which $0`
+FORWARDED_PORT=${FORWARDED_PORT:-":8080"}
+TEST_DEPLOY="../../tests/test_deploy"
+
+cd "$(dirname $SELF)"
+
+if [[ ! -x $TEST_DEPLOY ]]; then
+  echo "Make sure you are running inside dokku's build tree." 2>&1
+  exit 1
+fi
+
+for app_path in apps/*; do
+  app=$(basename $app_path)
+  echo "-----> Running test deploy of $app..."
+  $TEST_DEPLOY $app_path dokku.me $FORWARDED_PORT
+done
+
