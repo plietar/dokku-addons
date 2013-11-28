@@ -4,7 +4,11 @@ set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 CONTAINER_FILE="$ADDON_DATA/CONTAINER"
 PASSWORD_FILE="$ADDON_DATA/PASSWORD"
 
-docker build -rm -t addons/mariadb $ADDON_ROOT
+if [[ $DOKKU_TRACE ]]; then
+  docker build -rm -t addons/mariadb $ADDON_ROOT
+else
+  docker build -rm -q -t addons/mariadb $ADDON_ROOT > /dev/null
+fi
 
 set +o pipefail
 ROOT_PASSWORD=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 32)

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
-docker build -t addons/redis $ADDON_ROOT
+if [[ $DOKKU_TRACE ]]; then
+  docker build -rm -t addons/redis $ADDON_ROOT
+else
+  docker build -rm -q -t addons/redis $ADDON_ROOT > /dev/null
+fi
 
