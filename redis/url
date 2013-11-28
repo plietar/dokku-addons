@@ -8,5 +8,5 @@ CID=$(< "$DATADIR/CONTAINER")
 
 IP=$(docker inspect $CID | grep IPAddress | cut -d '"' -f 4)
 
-echo "redis://redis:$PASS@$IP:6379"
+echo "redis://$PASS@$IP:6379"
 
