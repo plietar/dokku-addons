@@ -2,13 +2,34 @@ var express = require('express');
 var mysql = require('mysql');
 
 var app = express();
-var db = mysql.createConnection(process.env.DOKKU_MARIADB_URL);
+var db;
 
-db.connect(function(err) {
-  if(err) {
-    return console.error('could not connect to mariadb', err);
-  }
+var connection;
 
+function handleDisconnect(cb) {
+  db = mysql.createConnection(process.env.DOKKU_MARIADB_URL);
+
+  db.connect(function(err) {
+    if(err) {
+      console.log('error when connecting to db:', err);
+      setTimeout(handleDisconnect, 2000);
+    }
+    else {
+      cb();
+    }
+  });
+
+  db.on('error', function(err) {
+    console.log('db error', err);
+    if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+      handleDisconnect(cb);
+    } else {
+      throw err;
+    }
+  });
+}
+
+handleDisconnect(function() {
   db.query('CREATE TABLE IF NOT EXISTS map (name varchar(64), value varchar(64))');
 });
 
