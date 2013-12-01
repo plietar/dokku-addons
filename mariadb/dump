@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+set -x
+
+CID=$(< $ADDON_DATA/CONTAINER)
+
+ID="$1"
+PASSWORD="$2"
+
+IP=$(docker inspect $CID | grep IPAddress | cut -d '"' -f 4)
+
+docker run -rm addons/mariadb mysqldump -h $IP -u "$ID" -p"$PASSWORD" --opt --single-transaction $ID
+
+

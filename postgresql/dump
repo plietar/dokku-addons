@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+CID=$(< $ADDON_DATA/CONTAINER)
+
+ID="$1"
+PASSWORD="$2"
+
+IP=$(docker inspect $CID | grep IPAddress | cut -d '"' -f 4)
+
+docker run -rm -e PGPASSWORD="$PASSWORD" addons/postgresql pg_dump -O -x -h $IP -U $ID -w $ID
+
+

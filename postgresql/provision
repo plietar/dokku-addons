@@ -17,7 +17,7 @@ CID=$(cat $CONTAINER_FILE)
 IP=$(docker inspect $CID | grep IPAddress | cut -d '"' -f 4)
 ROOT_PASSWORD=$(cat $PASSWORD_FILE)
 
-docker run -i -rm -e PGPASSWORD="$ROOT_PASSWORD" addons/postgresql psql -h $IP -U postgres -w > /dev/null <<EOF
+docker run -i -rm -e PGPASSWORD="$ROOT_PASSWORD" addons/postgresql psql -q -1 -v ON_ERROR_STOP=1 -h $IP -U postgres -w <<EOF
 CREATE USER "$ID" WITH PASSWORD '$PASSWORD';
 CREATE DATABASE "$ID";
 GRANT ALL PRIVILEGES ON DATABASE "$ID" TO "$ID";

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+ID="$1"
+PASSWORD="$2"
+
+DATADIR="$ADDON_DATA/$ID"
+
+CID=$(< $DATADIR/CONTAINER)
+
+docker kill $CID
+
+cat | docker run -i -v $DATADIR:/opt/redis addons/redis /bin/sh -c 'cat > /opt/redis/data/dump.rdb'
+
+CID=$(docker run -d -v $DATADIR:/opt/redis addons/redis)
+
+echo $CID > "$DATADIR/CONTAINER"
+
+

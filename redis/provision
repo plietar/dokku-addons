@@ -16,7 +16,6 @@ mkdir -p $DATADIR
 echo $PASSWORD > "$DATADIR/PASSWORD"
 
 CID=$(docker run -d -v $DATADIR:/opt/redis addons/redis)
-IP=$(docker inspect $CID | grep IPAddress | cut -d '"' -f 4)
 
 echo $CID > "$DATADIR/CONTAINER"
 
